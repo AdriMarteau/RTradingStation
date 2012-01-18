@@ -1,2 +1,3 @@
 To use the code, you first need to 'source' the strategy file and then the simulation file.
+Don't forget to add the 'quantmod' library (require("quantmod"))
 Then just 'source' run.r with your parameters and you're done !
