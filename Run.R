@@ -1,4 +1,4 @@
-Ticker= "GLE.PA" #"MSFT"
+Ticker= "GS" #"MSFT"
 Capital=Inf
 ShortSell=F
 StartDate="2009-01-01"
