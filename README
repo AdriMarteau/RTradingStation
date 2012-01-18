@@ -1,0 +1,2 @@
+To use the code, you first need to 'source' the strategy file and then the simulation file.
+Then just 'source' run.r with your parameters and you're done !
