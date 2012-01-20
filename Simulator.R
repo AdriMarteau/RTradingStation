@@ -1,11 +1,16 @@
-ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Source="yahoo")
+require("quantmod")
+
+ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Div=F, Source="yahoo")
 {
   X_ <<- getSymbols(Ticker,src=Source,auto.assign=F)
+  D_ <<- getDividends(Ticker,auto.assign = F)
   Spot_ <<- (Hi(X_)+Lo(X_))/2
   
   InitStrat()
   
   X=X_[paste(StartDate,EndDate,sep="/")]
+  D=D_[paste(StartDate,EndDate,sep="/")]
+ 
   Spot=(Hi(X)+Lo(X))/2
   A=Strat.A[paste(StartDate,EndDate,sep="/")]
   B=Strat.B[paste(StartDate,EndDate,sep="/")]
@@ -17,6 +22,7 @@ ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Sour
   for(i in 1:n)
   {
     qB=0; qS=0
+    date=index(Spot[i])
     # Determine the price (convention)
     S=as.double(Spot[i])
     # Maximum tradable qty
@@ -30,15 +36,16 @@ ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Sour
     QShare=QShare-qS+qB
     
     PnL=S*(qS-qB)
-    TotPnL=PnL+TotPnL
+    if(Div && length(D[date])>0) {PnL=PnL+D[date]*QShare}
     
     Ret[i,1]=PnL
-    Ret[i,2]=TotPnL
+    #Ret[i,2]=TotPnL
     Ret[i,3]=qB
     Ret[i,4]=qS
     Ret[i,5]=QShare
     Ret[i,6]=QShare*S
   }
+  Ret[,2]=cumsum(Ret[,1])
   Ret
 }
 
