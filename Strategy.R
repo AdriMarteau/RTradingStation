@@ -13,7 +13,7 @@ InitStrat <- function()
   
   for(i in (Strat.param.sm.l+1):n)
   {
-    Strat.M[i] <<- smoothing %*% Spot_[((i-Strat.param.sm.l):(i-1))] 
+    Strat.M[i] <<- smoothing %*% Spot_[((i-Strat.param.sm.l):(i-1))] / Strat.param.sm.lvl
   }
   Strat.A <<- Strat.M*(1-sig)
   Strat.B <<- Strat.M*(1+sig)

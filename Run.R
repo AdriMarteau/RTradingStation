@@ -5,8 +5,8 @@ StartDate="2009-01-01"
 EndDate="2011-01-31"
 
 Strat.param.sm.l <<- 100
-Strat.param.sm.lvl <<- 0.99
-Strat.param.r <<- 0.01
+Strat.param.sm.lvl <<- 0.1 #0.99
+Strat.param.r <<- 0.1
 
 
 title=paste("Backtest Strategy on ",Ticker,sep="")
