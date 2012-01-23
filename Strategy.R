@@ -27,6 +27,7 @@ StratAL <- function() #Adaptative limits
   smoothing = c(0:(Strat.param.sm.l-1))
   smoothing = (1-a)^smoothing
   smoothing = smoothing*a
+  Strat.M <<- xts(matrix(0,nc=1,nr=n),index(X_))
   
   for(i in (Strat.param.sm.l+1):n) 
     { Strat.M[i] <<- smoothing %*% Spot_[((i-Strat.param.sm.l):(i-1))] / Strat.param.sm.lvl }

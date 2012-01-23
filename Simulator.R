@@ -2,6 +2,7 @@ require("quantmod")
 
 ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Div=F, Source="yahoo")
 {
+  portfolio.reset()
   X_ <<- getSymbols(Ticker,src=Source,auto.assign=F)
   D_ <<- getDividends(Ticker,auto.assign = F)
   Spot_ <<- (Hi(X_)+Lo(X_))/2
@@ -17,35 +18,35 @@ ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Div=
   
   n=length(Cl(X))
   Ret=xts(matrix(0,nc=6,nr=n),index(X))
-  TotPnL=0
-  QShare=0
+  TotPnL=0;
+  QShare=0;
   for(i in 1:n)
   {
-    qB=0; qS=0
     date=index(Spot[i])
     # Determine the price (convention)
     S=as.double(Spot[i])
-    # Maximum tradable qty
+    # Maximum tradable qty TODO > write it in "portfolio.r"
     qBmax=max(0,floor((Capital+TotPnL)/S))
     if(ShortSell) qSmax=Inf else qSmax=QShare
     
     # Compute the quantities to buy and sell
-    if(S<=A[i]) qB=min(qBmax , ceiling(10*(A[i]-S)/A[i])) #runif(1)
-    if(S>=B[i]) qS=min(qSmax, ceiling(10*(S-B[i])/B[i])) #runif(1)
-    
-    QShare=QShare-qS+qB
-    
-    PnL=S*(qS-qB)
+    #if(S<=A[i]) qB=min(qBmax , ceiling(10*(A[i]-S)/A[i])) #runif(1)
+    #if(S>=B[i]) qS=min(qSmax, ceiling(10*(S-B[i])/B[i])) #runif(1)
+    tmp=TakePosition(S,A[i],B[i],qBmax,qSmax)
+    qB=tmp[1];qS=tmp[2]
+    PnL=tmp[3]+tmp[4]
     if(Div && length(D[date])>0) {PnL=PnL+D[date]*QShare}
     
     Ret[i,1]=PnL
-    #Ret[i,2]=TotPnL
+    TotPnL=sum(Ret[,1]);
+    Ret[i,2]=TotPnL
     Ret[i,3]=qB
     Ret[i,4]=qS
+    QShare=portfolio.totalQuant();
     Ret[i,5]=QShare
     Ret[i,6]=QShare*S
   }
-  Ret[,2]=cumsum(Ret[,1])
+  #Ret[,2]=cumsum(Ret[,1])
   Ret
 }
 
