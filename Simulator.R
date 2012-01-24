@@ -17,7 +17,7 @@ ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Div=
   B=Strat.B[paste(StartDate,EndDate,sep="/")]
   
   n=length(Cl(X))
-  Ret<<-xts(matrix(0,nc=6,nr=n),index(X))
+  Ret<<-xts(matrix(0,nc=7,nr=n),index(X))
   TotPnL=0;
   QShare=0;
   for(i in 1:n)
@@ -44,6 +44,7 @@ ExecStrat <- function(Ticker, StartDate, EndDate, Capital=Inf, ShortSell=F, Div=
     QShare=portfolio.totalQuant();
     Ret[i,5]=QShare
     Ret[i,6]=QShare*S
+    Ret[i,7]=Ret[i,2]+Ret[i,6]
     
   }
   #Ret[,2]=cumsum(Ret[,1])

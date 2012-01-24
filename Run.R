@@ -1,5 +1,5 @@
 Ticker    <<- "MSFT"
-Capital   <<- 1000
+Capital   <<- 500
 ShortSell <<- F
 Dividend  <<- T
 StartDate <<- "2009-01-01"
@@ -9,7 +9,7 @@ Strategy  <<-"AL2" # EMA AL
 
 #SMOOTHING PARAMS FOR EMA AND AL[i]
  Strat.param.sm.l   <<- 10
- Strat.param.sm.lvl <<- 0.7 #0.99
+ Strat.param.sm.lvl <<- 0.7 
 
 #ADAPTATION PARAM FOR AL1
  Strat.param.al.l     <<- 5     ## Starting value
@@ -20,7 +20,7 @@ Strategy  <<-"AL2" # EMA AL
 
 #ADAPTATION PARAM FOR AL2
  Strat.param.al.l     <<- 5     ## Starting value
- Strat.param.al.lvl   <<- 0.1   ## Trigger lvl when spot too out (up)
+ Strat.param.al.lvl   <<- 0.1   ## Trigger lvl
 
 #WIDTH PARAM
  Strat.param.r      <<- 0.1
