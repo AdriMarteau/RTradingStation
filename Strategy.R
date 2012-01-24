@@ -18,7 +18,7 @@ StratEMA <- function()
   Strat.A <<- Strat.M*(1-sig); Strat.B <<- Strat.M*(1+sig)
 }
 
-StratAL <- function() #Adaptative limits
+StratAL1 <- function() #Adaptative limits
 {
   n=length(Cl(X_))
   
@@ -48,6 +48,34 @@ StratAL <- function() #Adaptative limits
       {B[(i+1):n] <- as.double(B[i]*(1-Strat.param.al.r.u))}
     if((S-B[i])/S > Strat.param.al.lvl.d)         #B is too low 
       {B[(i+1):n] <- as.double(B[i]*(1+Strat.param.al.r.d))}
+  }
+  Strat.A <<- xts(A,index(X_));  Strat.B <<- xts(B,index(X_))
+}
+
+StratAL2 <- function() #Adaptative limits
+{
+  n=length(Cl(X_))
+  
+  a=1-(1-Strat.param.sm.lvl)^(1/Strat.param.sm.l)
+  sig=(Strat.param.r)/(2+Strat.param.r)
+  smoothing = c(0:(Strat.param.sm.l-1))
+  smoothing = (1-a)^smoothing
+  smoothing = smoothing*a
+  Strat.M <<- xts(matrix(0,nc=1,nr=n),index(X_))
+  
+  for(i in (Strat.param.sm.l+1):n) 
+    { Strat.M[i] <<- smoothing %*% Spot_[((i-Strat.param.sm.l):(i-1))] / Strat.param.sm.lvl }
+ 
+  l=length(Spot_[paste("",StartDate,sep="/")])
+  m=mean(Spot_[(l-Strat.param.al.l+1):l])
+  sig=(Strat.param.r)/(2+Strat.param.r)
+  A = matrix(m*(1-sig),nc=1,nr=n)
+  B = matrix(m*(1+sig),nc=1,nr=n)
+  for(i in (l+1):(n-1))
+  {
+    S=Strat.M[i]
+    if(max(abs((B[i]-S)/S),abs((A[i]-S)/S)) > Strat.param.al.lvl) 
+      {A[(i+1):n] <- as.double(S*(1-sig));B[(i+1):n] <- as.double(S*(1+sig));}
   }
   Strat.A <<- xts(A,index(X_));  Strat.B <<- xts(B,index(X_))
 }
